@@ -2,18 +2,7 @@ import Link from "next/link";
 import { TrendingUp, TrendingDown } from "lucide-react";
 import { HOLDINGS, fmtPrice, fmt } from "@/lib/mockData";
 import StatCard from "@/components/StatCard";
-import {
-  RadialBarChart,
-  RadialBar,
-  ResponsiveContainer,
-  Legend,
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-} from "recharts";
-
-const COLORS = ["#0052FF", "#05B169", "#F5A623", "#CF202F"];
+import AllocationChart from "@/components/AllocationChart";
 
 const totalValue = HOLDINGS.reduce((s, h) => s + h.amount * h.currentPrice, 0);
 const totalCost  = HOLDINGS.reduce((s, h) => s + h.amount * h.avgCost, 0);
@@ -48,23 +37,7 @@ export default function PortfolioPage() {
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <div className="rounded-xl border border-[#2A2D3A] bg-[#131722] p-4">
           <h3 className="mb-3 text-sm font-semibold text-[#E8ECF0]">Allocation</h3>
-          <ResponsiveContainer width="100%" height={200}>
-            <PieChart>
-              <Pie data={pieData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={3} dataKey="value">
-                {pieData.map((_, i) => (
-                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip
-                contentStyle={{ background: "#1C1E26", border: "1px solid #2A2D3A", borderRadius: 8 }}
-                itemStyle={{ color: "#E8ECF0", fontSize: 12 }}
-                formatter={(v) => v != null ? [`${v}%`, "Allocation"] : ["—", "Allocation"]}
-              />
-              <Legend
-                formatter={(value) => <span className="text-xs text-[#5B616E]">{value}</span>}
-              />
-            </PieChart>
-          </ResponsiveContainer>
+          <AllocationChart data={pieData} />
         </div>
 
         <div className="lg:col-span-2 rounded-xl border border-[#2A2D3A] bg-[#131722] overflow-hidden">
