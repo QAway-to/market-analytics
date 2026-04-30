@@ -1,65 +1,87 @@
-import Image from "next/image";
+import Link from "next/link";
+import { TrendingUp, TrendingDown } from "lucide-react";
+import { ASSETS, fmt, fmtPrice } from "@/lib/mockData";
+import SparklineChart from "@/components/SparklineChart";
+import StatCard from "@/components/StatCard";
 
-export default function Home() {
+const totalMarketCap = ASSETS.reduce((s, a) => s + a.marketCap, 0);
+const totalVolume = ASSETS.reduce((s, a) => s + a.volume24h, 0);
+const gainers = ASSETS.filter((a) => a.change24h > 0).length;
+
+export default function MarketsPage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-lg font-bold text-[#E8ECF0]">Market Overview</h1>
+        <p className="text-xs text-[#5B616E] mt-0.5">Live crypto market data · 8 assets</p>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <StatCard label="Total Market Cap" value={fmt(totalMarketCap)} />
+        <StatCard label="24h Volume" value={fmt(totalVolume)} />
+        <StatCard label="Gainers" value={`${gainers} / ${ASSETS.length}`} positive />
+        <StatCard label="BTC Dominance" value="48.2%" />
+      </div>
+
+      <div className="rounded-xl border border-[#2A2D3A] bg-[#131722] overflow-hidden">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-[#2A2D3A]">
+              {["#", "Asset", "Price", "24h Change", "Volume", "Market Cap", "7d"].map((h) => (
+                <th key={h} className="px-4 py-3 text-left text-xs font-medium text-[#5B616E] first:w-8">
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {ASSETS.map((asset, i) => {
+              const up = asset.change24h >= 0;
+              return (
+                <tr
+                  key={asset.symbol}
+                  className="border-b border-[#2A2D3A]/50 transition-colors hover:bg-[#1C1E26] last:border-0"
+                >
+                  <td className="px-4 py-3 text-xs text-[#5B616E]">{i + 1}</td>
+                  <td className="px-4 py-3">
+                    <Link href={`/trade/${asset.symbol}`} className="flex items-center gap-2 group">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#0052FF]/10 text-xs font-bold text-[#0052FF]">
+                        {asset.symbol[0]}
+                      </div>
+                      <div>
+                        <div className="font-semibold text-[#E8ECF0] group-hover:text-[#0052FF] transition-colors">
+                          {asset.symbol}
+                        </div>
+                        <div className="text-xs text-[#5B616E]">{asset.name}</div>
+                      </div>
+                    </Link>
+                  </td>
+                  <td className="px-4 py-3 font-mono font-medium text-[#E8ECF0]">
+                    {fmtPrice(asset.price)}
+                  </td>
+                  <td className="px-4 py-3">
+                    <span
+                      className={`inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-semibold ${
+                        up
+                          ? "bg-[#05B169]/10 text-[#05B169]"
+                          : "bg-[#CF202F]/10 text-[#CF202F]"
+                      }`}
+                    >
+                      {up ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+                      {up ? "+" : ""}{asset.change24h.toFixed(2)}%
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-[#5B616E]">{fmt(asset.volume24h)}</td>
+                  <td className="px-4 py-3 text-[#5B616E]">{fmt(asset.marketCap)}</td>
+                  <td className="px-4 py-3">
+                    <SparklineChart data={asset.sparkline} positive={up} />
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
