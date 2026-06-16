@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Market Analytics
+
+A crypto market analytics dashboard built with **Next.js 16** and **React 19**. Dark-themed UI inspired by Coinbase — clean, fast, and focused on data.
+
+## Features
+
+**Market Overview**
+- Live table of 8 assets (BTC, ETH, SOL, BNB, XRP, DOGE, ADA, AVAX)
+- Price, 24h change with trend indicator, volume, market cap, 7-day sparkline
+
+**Asset Detail — `/trade/:symbol`**
+- Area & candlestick chart (60 candles, hourly)
+- RSI and MACD indicators computed client-side
+- Real-time order book simulation (bids/asks)
+- Recent trades feed
+
+**Portfolio**
+- Holdings table with average cost, current price, and P&L per asset
+- Allocation pie chart (Recharts)
+- Total value and all-time P&L summary
+
+**Watchlist**
+- Persistent watchlist via `localStorage`
+- Add/remove assets from any page
+
+## Stack
+
+| Layer | Tech |
+|-------|------|
+| Framework | Next.js 16 (App Router) |
+| UI | React 19, Tailwind CSS v4 |
+| Charts | Recharts |
+| Icons | Lucide React |
+| Language | TypeScript |
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/
+│   ├── page.tsx              # Market Overview
+│   ├── trade/[symbol]/       # Asset detail page
+│   ├── portfolio/            # Portfolio & P&L
+│   └── watchlist/            # Saved assets
+├── components/
+│   ├── PriceChart.tsx        # Candlestick / area chart + RSI / MACD
+│   ├── OrderBook.tsx         # Bids & asks table
+│   ├── RecentTrades.tsx      # Trade feed
+│   ├── AllocationChart.tsx   # Pie chart
+│   └── SparklineChart.tsx    # Inline 7-day chart
+└── lib/
+    └── mockData.ts           # Generated price data & indicators
+```
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+> All market data is mock — generated deterministically on the server. No external API calls or keys required.
