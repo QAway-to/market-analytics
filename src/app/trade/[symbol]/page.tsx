@@ -21,7 +21,7 @@ export default async function TradePage({ params }: Props) {
   const asset = ASSETS.find((a) => a.symbol === symbol.toUpperCase());
   if (!asset) notFound();
 
-  const candles = CANDLES[asset.symbol] ?? [];
+  const candlesByTf = CANDLES[asset.symbol] ?? {};
   const { bids, asks } = getOrderBook(asset.symbol);
   const trades = getRecentTrades(asset.symbol);
   const up = asset.change24h >= 0;
@@ -71,7 +71,7 @@ export default async function TradePage({ params }: Props) {
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-4">
-          <PriceChart candles={candles} symbol={asset.symbol} />
+          <PriceChart candlesByTf={candlesByTf} symbol={asset.symbol} />
         </div>
         <div className="space-y-4">
           <OrderBook bids={bids} asks={asks} mid={asset.price} />
