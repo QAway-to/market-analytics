@@ -218,7 +218,7 @@ interface RSIChartProps {
 function RSIChart({ data }: RSIChartProps) {
   return (
     <div className="relative">
-      <span className="absolute left-10 top-1 z-10 text-[9px] font-medium text-[#5B616E]">
+      <span className="absolute left-[64px] top-1 z-10 text-[9px] font-medium text-[#5B616E]">
         RSI 14
       </span>
       <ResponsiveContainer width="100%" height={60}>
@@ -261,7 +261,7 @@ interface MACDChartProps {
 function MACDChart({ data }: MACDChartProps) {
   return (
     <div className="relative">
-      <span className="absolute left-10 top-1 z-10 text-[9px] font-medium text-[#5B616E]">
+      <span className="absolute left-[64px] top-1 z-10 text-[9px] font-medium text-[#5B616E]">
         MACD 12,26,9
       </span>
       <ResponsiveContainer width="100%" height={60}>
