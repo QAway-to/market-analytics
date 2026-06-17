@@ -20,7 +20,7 @@ import type { Candle } from "@/lib/mockData";
 
 type ChartType = "area" | "candle";
 
-type Props = { candles: Candle[]; symbol: string };
+type Props = { candlesByTf: Record<string, Candle[]>; symbol: string };
 
 interface ChartRow {
   time: string;
@@ -322,12 +322,15 @@ function MACDChart({ data }: MACDChartProps) {
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
-export default function PriceChart({ candles, symbol }: Props) {
+export default function PriceChart({ candlesByTf, symbol }: Props) {
   const [chartType, setChartType] = useState<ChartType>("area");
   const [activeTimeframe, setActiveTimeframe] = useState("1H");
 
+  const candles = candlesByTf[activeTimeframe] ?? [];
+  const isDateOnly = activeTimeframe === "1D" || activeTimeframe === "1W";
+
   const data: ChartRow[] = candles.map((c) => ({
-    time: c.time.slice(5, 13),
+    time: isDateOnly ? c.time.slice(5, 10) : c.time.slice(5, 13),
     close: c.close,
     volume: c.volume,
     open: c.open,
@@ -336,9 +339,9 @@ export default function PriceChart({ candles, symbol }: Props) {
   }));
 
   const closes = candles.map((c) => c.close);
-  const min = Math.min(...closes) * 0.999;
-  const max = Math.max(...closes) * 1.001;
-  const isUp = candles[candles.length - 1].close >= candles[0].open;
+  const min = closes.length > 0 ? Math.min(...closes) * 0.999 : 0;
+  const max = closes.length > 0 ? Math.max(...closes) * 1.001 : 100;
+  const isUp = candles.length > 0 && candles[candles.length - 1].close >= candles[0].open;
   const areaColor = isUp ? "#05B169" : "#CF202F";
 
   // Indicators
